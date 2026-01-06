@@ -6,7 +6,10 @@
       "Bash(dir:*)",
       "Bash(if exist nul del nul)",
       "Bash(git add:*)",
-      "Bash(test:*)"
+      "Bash(test:*)",
+      "Bash(find:*)",
+      "Bash(wc:*)",
+      "Bash(cat:*)"
     ]
   }
 }
