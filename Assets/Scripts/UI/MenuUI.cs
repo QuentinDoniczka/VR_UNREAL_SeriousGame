@@ -6,7 +6,7 @@ namespace UI
 {
     public class MenuUI : MonoBehaviour
     {
-        private const string GAME_SCENE_NAME = "GameScene";
+        private const string GAME_SCENE_NAME = "GameMenuScene";
 
         [Header("Button References")]
         [SerializeField] private Button playButton;
