@@ -4,17 +4,15 @@ using Core.Managers;
 
 namespace UI
 {
-    public class MenuUI : MonoBehaviour
+    public class MainMenuPanel : MonoBehaviour
     {
-        private const string GAME_SCENE_NAME = "GameMenuScene";
-
         [Header("Button References")]
         [SerializeField] private Button playButton;
         [SerializeField] private Button optionsButton;
         [SerializeField] private Button quitButton;
 
-        [Header("Settings")]
-        [SerializeField] private bool enableButtonSounds = false;
+        [Header("Dependencies")]
+        [SerializeField] private MenuPanelManager panelManager;
 
         private void Start()
         {
@@ -33,24 +31,24 @@ namespace UI
                 quitButton.onClick.AddListener(OnQuitButtonClicked);
         }
 
-        public void OnPlayButtonClicked()
+        private void OnPlayButtonClicked()
         {
-            if (SceneManager.Instance != null)
+            if (panelManager != null)
             {
-                SceneManager.Instance.LoadScene(GAME_SCENE_NAME);
+                panelManager.ShowModeSelection();
             }
             else
             {
-                Debug.LogError("SceneManager instance not found!");
+                Debug.LogError("MenuPanelManager reference is missing!");
             }
         }
 
-        public void OnOptionsButtonClicked()
+        private void OnOptionsButtonClicked()
         {
             Debug.Log("Options - Not implemented yet");
         }
 
-        public void OnQuitButtonClicked()
+        private void OnQuitButtonClicked()
         {
             if (SceneManager.Instance != null)
             {

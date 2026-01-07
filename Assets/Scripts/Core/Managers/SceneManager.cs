@@ -5,6 +5,9 @@ namespace Core.Managers
 {
     public class SceneManager : MonoBehaviour
     {
+        private const string GAME_SCENE_NAME = "GameScene";
+        private const string MAIN_MENU_SCENE_NAME = "MainMenuScene";
+
         private static SceneManager _instance;
         public static SceneManager Instance => _instance;
 
@@ -17,6 +20,16 @@ namespace Core.Managers
             }
 
             _instance = this;
+        }
+
+        public void LoadGameScene()
+        {
+            LoadScene(GAME_SCENE_NAME);
+        }
+
+        public void LoadMainMenuScene()
+        {
+            LoadScene(MAIN_MENU_SCENE_NAME);
         }
 
         public void LoadScene(string sceneName)
