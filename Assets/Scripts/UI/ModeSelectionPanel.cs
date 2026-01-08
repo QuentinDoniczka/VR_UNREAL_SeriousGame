@@ -4,7 +4,7 @@ using Core.Managers;
 
 namespace UI
 {
-    public class ModeSelectionPanel : MonoBehaviour
+    public class ModeSelectionPanel : UIPanel
     {
         [Header("Button References")]
         [SerializeField] private Button extincteurButton;
@@ -13,18 +13,10 @@ namespace UI
         [Header("Dependencies")]
         [SerializeField] private MenuPanelManager panelManager;
 
-        private void Start()
+        protected override void RegisterButtons()
         {
-            SetupButtons();
-        }
-
-        private void SetupButtons()
-        {
-            if (extincteurButton != null)
-                extincteurButton.onClick.AddListener(OnExtincteurClicked);
-
-            if (backButton != null)
-                backButton.onClick.AddListener(OnBackButtonClicked);
+            RegisterButton(extincteurButton, OnExtincteurClicked);
+            RegisterButton(backButton, OnBackButtonClicked);
         }
 
         private void OnExtincteurClicked()
@@ -49,15 +41,6 @@ namespace UI
             {
                 Debug.LogError("MenuPanelManager reference is missing!");
             }
-        }
-
-        private void OnDestroy()
-        {
-            if (extincteurButton != null)
-                extincteurButton.onClick.RemoveListener(OnExtincteurClicked);
-
-            if (backButton != null)
-                backButton.onClick.RemoveListener(OnBackButtonClicked);
         }
     }
 }

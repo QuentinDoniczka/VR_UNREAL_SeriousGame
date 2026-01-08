@@ -4,7 +4,7 @@ using Core.Managers;
 
 namespace UI
 {
-    public class InGameMenuPanel : MonoBehaviour
+    public class InGameMenuPanel : UIPanel
     {
         [Header("Button References")]
         [SerializeField] private Button menuButton;
@@ -13,18 +13,10 @@ namespace UI
         [Header("Dependencies")]
         [SerializeField] private ConfirmationDialog confirmationDialog;
 
-        private void Start()
+        protected override void RegisterButtons()
         {
-            SetupButtons();
-        }
-
-        private void SetupButtons()
-        {
-            if (menuButton != null)
-                menuButton.onClick.AddListener(OnMenuButtonClicked);
-
-            if (backButton != null)
-                backButton.onClick.AddListener(OnBackButtonClicked);
+            RegisterButton(menuButton, OnMenuButtonClicked);
+            RegisterButton(backButton, OnBackButtonClicked);
         }
 
         private void OnMenuButtonClicked()
@@ -45,6 +37,8 @@ namespace UI
 
         private void ReturnToMainMenu()
         {
+            Time.timeScale = 1f;
+
             if (SceneManager.Instance != null)
             {
                 SceneManager.Instance.LoadMainMenuScene();
@@ -58,15 +52,6 @@ namespace UI
         private void OnBackButtonClicked()
         {
             gameObject.SetActive(false);
-        }
-
-        private void OnDestroy()
-        {
-            if (menuButton != null)
-                menuButton.onClick.RemoveListener(OnMenuButtonClicked);
-
-            if (backButton != null)
-                backButton.onClick.RemoveListener(OnBackButtonClicked);
         }
     }
 }

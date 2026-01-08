@@ -9,7 +9,18 @@
       "Bash(test:*)",
       "Bash(find:*)",
       "Bash(wc:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(rm -rf \"Assets/_Recovery\" \"Assets/_Recovery.meta\" NUL)",
+      "Bash(git pull:*)",
+      "Bash(git rm:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nFix git merge conflicts: remove _Recovery folder and update .gitignore\n\n- Remove Unity auto-recovery files that shouldn''t be in repo\n- Add _Recovery/ and NUL to .gitignore to prevent future conflicts\n- These files are Unity-generated and should never be committed\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git stash:*)",
+      "Bash(git commit:*)",
+      "Bash(git push)",
+      "Bash(rm:*)",
+      "Bash(git mv:*)",
+      "Bash(findstr:*)",
+      "Bash(grep:*)"
     ]
   }
 }

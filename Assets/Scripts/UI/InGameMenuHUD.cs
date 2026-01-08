@@ -10,6 +10,7 @@ namespace UI
         [SerializeField] private GameObject menuPanel;
         [SerializeField] private Transform cameraTransform;
         [SerializeField] private Canvas hudCanvas;
+        [SerializeField] private ConfirmationDialog confirmationDialog;
 
         [Header("HUD Settings")]
         [SerializeField] private float distanceFromCamera = 2f;
@@ -88,6 +89,12 @@ namespace UI
 
         public void ToggleMenu()
         {
+            if (confirmationDialog != null && confirmationDialog.IsVisible)
+            {
+                confirmationDialog.Hide();
+                return;
+            }
+
             _isMenuOpen = !_isMenuOpen;
 
             if (menuPanel != null)

@@ -4,7 +4,7 @@ using System;
 
 namespace UI
 {
-    public class ConfirmationDialog : MonoBehaviour
+    public class ConfirmationDialog : UIPanel
     {
         [Header("UI References")]
         [SerializeField] private GameObject dialogPanel;
@@ -14,19 +14,17 @@ namespace UI
         private Action _onConfirm;
         private Action _onCancel;
 
-        private void Start()
+        public bool IsVisible => dialogPanel != null && dialogPanel.activeSelf;
+
+        protected override void RegisterButtons()
         {
-            SetupButtons();
-            Hide();
+            RegisterButton(confirmButton, OnConfirm);
+            RegisterButton(cancelButton, OnCancel);
         }
 
-        private void SetupButtons()
+        protected override void OnPanelStart()
         {
-            if (confirmButton != null)
-                confirmButton.onClick.AddListener(OnConfirm);
-
-            if (cancelButton != null)
-                cancelButton.onClick.AddListener(OnCancel);
+            Hide();
         }
 
         public void Show(Action onConfirm, Action onCancel = null)
@@ -57,15 +55,6 @@ namespace UI
         {
             _onCancel?.Invoke();
             Hide();
-        }
-
-        private void OnDestroy()
-        {
-            if (confirmButton != null)
-                confirmButton.onClick.RemoveListener(OnConfirm);
-
-            if (cancelButton != null)
-                cancelButton.onClick.RemoveListener(OnCancel);
         }
     }
 }

@@ -14,6 +14,33 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Grab Left",
+                    "type": "Button",
+                    "id": "22222222-3333-4444-5555-666666666666",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Grab Right",
+                    "type": "Button",
+                    "id": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Use",
+                    "type": "Button",
+                    "id": "33333333-4444-5555-6666-777777777777",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -36,6 +63,72 @@
                     "processors": "",
                     "groups": "XR",
                     "action": "Toggle Menu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "55555555-6666-7777-8888-999999999999",
+                    "path": "<XRController>{LeftHand}/gripButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "Grab Left",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "99999999-aaaa-bbbb-cccc-dddddddddddd",
+                    "path": "<XRSimulatedController>{LeftHand}/grip",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "Grab Left",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "44444444-5555-6666-7777-888888888888",
+                    "path": "<XRController>{RightHand}/gripButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "Grab Right",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "88888888-9999-aaaa-bbbb-cccccccccccc",
+                    "path": "<XRSimulatedController>{RightHand}/grip",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "Grab Right",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "66666666-7777-8888-9999-aaaaaaaaaaaa",
+                    "path": "<XRController>{RightHand}/primaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "Use",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "77777777-8888-9999-aaaa-bbbbbbbbbbbb",
+                    "path": "<XRController>{LeftHand}/primaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XR",
+                    "action": "Use",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

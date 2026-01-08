@@ -4,7 +4,7 @@ using Core.Managers;
 
 namespace UI
 {
-    public class MainMenuPanel : MonoBehaviour
+    public class MainMenuPanel : UIPanel
     {
         [Header("Button References")]
         [SerializeField] private Button playButton;
@@ -14,21 +14,11 @@ namespace UI
         [Header("Dependencies")]
         [SerializeField] private MenuPanelManager panelManager;
 
-        private void Start()
+        protected override void RegisterButtons()
         {
-            SetupButtons();
-        }
-
-        private void SetupButtons()
-        {
-            if (playButton != null)
-                playButton.onClick.AddListener(OnPlayButtonClicked);
-
-            if (optionsButton != null)
-                optionsButton.onClick.AddListener(OnOptionsButtonClicked);
-
-            if (quitButton != null)
-                quitButton.onClick.AddListener(OnQuitButtonClicked);
+            RegisterButton(playButton, OnPlayButtonClicked);
+            RegisterButton(optionsButton, OnOptionsButtonClicked);
+            RegisterButton(quitButton, OnQuitButtonClicked);
         }
 
         private void OnPlayButtonClicked()
@@ -58,18 +48,6 @@ namespace UI
             {
                 Debug.LogError("SceneManager instance not found!");
             }
-        }
-
-        private void OnDestroy()
-        {
-            if (playButton != null)
-                playButton.onClick.RemoveListener(OnPlayButtonClicked);
-
-            if (optionsButton != null)
-                optionsButton.onClick.RemoveListener(OnOptionsButtonClicked);
-
-            if (quitButton != null)
-                quitButton.onClick.RemoveListener(OnQuitButtonClicked);
         }
     }
 }
