@@ -22,9 +22,9 @@ namespace Interaction
         protected Transform handTransform;
         protected Rigidbody rb;
 
-        private VRMenuInputActions inputActions;
-        private InputAction grabLeftAction;
-        private InputAction grabRightAction;
+        protected VRMenuInputActions inputActions;
+        protected InputAction grabLeftAction;
+        protected InputAction grabRightAction;
 
         private Transform leftHand;
         private Transform rightHand;
@@ -94,11 +94,7 @@ namespace Interaction
             Transform hand = GetLeftHand();
             if (hand == null) return;
 
-            if (isGrabbed)
-            {
-                if (handTransform == hand) return;
-                Release();
-            }
+            if (isGrabbed) return;
 
             if (IsHandInRange(hand))
             {
@@ -120,11 +116,7 @@ namespace Interaction
             Transform hand = GetRightHand();
             if (hand == null) return;
 
-            if (isGrabbed)
-            {
-                if (handTransform == hand) return;
-                Release();
-            }
+            if (isGrabbed) return;
 
             if (IsHandInRange(hand))
             {

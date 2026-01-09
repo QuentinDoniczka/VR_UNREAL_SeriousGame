@@ -20,7 +20,8 @@
       "Bash(rm:*)",
       "Bash(git mv:*)",
       "Bash(findstr:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(git restore:*)"
     ]
   }
 }

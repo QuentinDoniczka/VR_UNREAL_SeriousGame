@@ -67,6 +67,9 @@ sysinfo.txt
 [Aa]ssets/_Recovery/
 [Aa]ssets/_Recovery.meta
 
+# Ignore Interiors_A asset folder
+Assets/LoafbrrAssets/Interiors_A/
+
 # Windows null device file
 NUL
 

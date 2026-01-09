@@ -18,29 +18,27 @@ namespace Interaction
 
         [Header("Two-Handed Grip")]
         [SerializeField] private Transform secondaryGripPoint;
+        [SerializeField] private GameObject secondaryGripHandle;
         [SerializeField] private float secondaryGripDistance = 0.5f;
 
-        private VRMenuInputActions inputActions;
         private InputAction useAction;
-        private InputAction grabLeftAction;
-        private InputAction grabRightAction;
-
         private Transform secondaryHand;
         private bool isSecondaryGrabbed;
 
         protected override void Awake()
         {
             base.Awake();
-            inputActions = new VRMenuInputActions();
             useAction = inputActions.VRMenu.Use;
-            grabLeftAction = inputActions.VRMenu.GrabLeft;
-            grabRightAction = inputActions.VRMenu.GrabRight;
+
+            if (secondaryGripHandle != null)
+            {
+                secondaryGripHandle.SetActive(false);
+            }
         }
 
         protected override void OnEnable()
         {
             base.OnEnable();
-            inputActions.Enable();
             useAction.performed += OnUsePerformed;
             grabLeftAction.performed += OnSecondaryGrabPerformed;
             grabRightAction.performed += OnSecondaryGrabPerformed;
@@ -56,7 +54,6 @@ namespace Interaction
             grabRightAction.performed -= OnSecondaryGrabPerformed;
             grabLeftAction.canceled -= OnSecondaryGrabCanceled;
             grabRightAction.canceled -= OnSecondaryGrabCanceled;
-            inputActions.Disable();
         }
 
         private void OnUsePerformed(InputAction.CallbackContext context)
@@ -75,9 +72,9 @@ namespace Interaction
         {
             base.Update();
 
-            if (isSecondaryGrabbed && secondaryHand != null && secondaryGripPoint != null)
+            if (isSecondaryGrabbed && secondaryHand != null && secondaryGripHandle != null)
             {
-                FollowSecondaryHand();
+                FollowHandleToSecondaryHand();
             }
         }
 
@@ -85,21 +82,20 @@ namespace Interaction
         {
             if (!isGrabbed) return;
 
+            Transform triggeringHand = GetHandFromContext(context);
+            if (triggeringHand == null) return;
+
+            if (triggeringHand == handTransform) return;
+
             Transform freeHand = GetFreeHand();
-            if (freeHand == null) return;
+            if (freeHand == null || freeHand != triggeringHand) return;
 
-            if (secondaryGripPoint == null)
-            {
-                secondaryHand = freeHand;
-                isSecondaryGrabbed = true;
-                return;
-            }
+            secondaryHand = freeHand;
+            isSecondaryGrabbed = true;
 
-            float distance = Vector3.Distance(freeHand.position, secondaryGripPoint.position);
-            if (distance <= secondaryGripDistance)
+            if (secondaryGripHandle != null)
             {
-                secondaryHand = freeHand;
-                isSecondaryGrabbed = true;
+                secondaryGripHandle.SetActive(true);
             }
         }
 
@@ -112,6 +108,11 @@ namespace Interaction
             {
                 secondaryHand = null;
                 isSecondaryGrabbed = false;
+
+                if (secondaryGripHandle != null)
+                {
+                    secondaryGripHandle.SetActive(false);
+                }
             }
         }
 
@@ -147,12 +148,21 @@ namespace Interaction
             return null;
         }
 
-        private void FollowSecondaryHand()
+        private void FollowHandleToSecondaryHand()
         {
-            if (secondaryGripPoint == null) return;
+            if (secondaryGripHandle == null || secondaryHand == null) return;
 
-            Vector3 directionToGrip = secondaryGripPoint.position - secondaryHand.position;
-            transform.position -= directionToGrip;
+            secondaryGripHandle.transform.position = Vector3.Lerp(
+                secondaryGripHandle.transform.position,
+                secondaryHand.position,
+                Time.deltaTime * positionFollowSpeed
+            );
+
+            secondaryGripHandle.transform.rotation = Quaternion.Slerp(
+                secondaryGripHandle.transform.rotation,
+                secondaryHand.rotation,
+                Time.deltaTime * rotationFollowSpeed
+            );
         }
 
         protected override void Release()
@@ -160,6 +170,11 @@ namespace Interaction
             base.Release();
             secondaryHand = null;
             isSecondaryGrabbed = false;
+
+            if (secondaryGripHandle != null)
+            {
+                secondaryGripHandle.SetActive(false);
+            }
         }
 
         public ExtinguisherType Type => extinguisherType;
