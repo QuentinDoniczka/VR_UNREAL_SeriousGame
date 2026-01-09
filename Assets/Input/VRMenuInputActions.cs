@@ -127,6 +127,78 @@ public partial class @VRMenuInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Primary Button Left"",
+                    ""type"": ""Button"",
+                    ""id"": ""11111111-aaaa-bbbb-cccc-111111111111"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Primary Button Right"",
+                    ""type"": ""Button"",
+                    ""id"": ""22222222-aaaa-bbbb-cccc-222222222222"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Secondary Button Left"",
+                    ""type"": ""Button"",
+                    ""id"": ""33333333-aaaa-bbbb-cccc-333333333333"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Secondary Button Right"",
+                    ""type"": ""Button"",
+                    ""id"": ""44444444-aaaa-bbbb-cccc-444444444444"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Trigger Left"",
+                    ""type"": ""Button"",
+                    ""id"": ""55555555-aaaa-bbbb-cccc-555555555555"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Trigger Right"",
+                    ""type"": ""Button"",
+                    ""id"": ""66666666-aaaa-bbbb-cccc-666666666666"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Thumbstick Press Left"",
+                    ""type"": ""Button"",
+                    ""id"": ""77777777-aaaa-bbbb-cccc-777777777777"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Thumbstick Press Right"",
+                    ""type"": ""Button"",
+                    ""id"": ""88888888-aaaa-bbbb-cccc-888888888888"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -217,6 +289,94 @@ public partial class @VRMenuInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""Use"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""aaaaaaaa-1111-2222-3333-111111111111"",
+                    ""path"": ""<XRController>{LeftHand}/primaryButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""XR"",
+                    ""action"": ""Primary Button Left"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bbbbbbbb-1111-2222-3333-222222222222"",
+                    ""path"": ""<XRController>{RightHand}/primaryButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""XR"",
+                    ""action"": ""Primary Button Right"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cccccccc-1111-2222-3333-333333333333"",
+                    ""path"": ""<XRController>{LeftHand}/secondaryButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""XR"",
+                    ""action"": ""Secondary Button Left"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""dddddddd-1111-2222-3333-444444444444"",
+                    ""path"": ""<XRController>{RightHand}/secondaryButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""XR"",
+                    ""action"": ""Secondary Button Right"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""eeeeeeee-1111-2222-3333-555555555555"",
+                    ""path"": ""<XRController>{LeftHand}/trigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""XR"",
+                    ""action"": ""Trigger Left"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ffffffff-1111-2222-3333-666666666666"",
+                    ""path"": ""<XRController>{RightHand}/trigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""XR"",
+                    ""action"": ""Trigger Right"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""11111111-2222-3333-4444-777777777777"",
+                    ""path"": ""<XRController>{LeftHand}/thumbstickClicked"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""XR"",
+                    ""action"": ""Thumbstick Press Left"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""22222222-2222-3333-4444-888888888888"",
+                    ""path"": ""<XRController>{RightHand}/thumbstickClicked"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""XR"",
+                    ""action"": ""Thumbstick Press Right"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -241,6 +401,14 @@ public partial class @VRMenuInputActions: IInputActionCollection2, IDisposable
         m_VRMenu_GrabLeft = m_VRMenu.FindAction("Grab Left", throwIfNotFound: true);
         m_VRMenu_GrabRight = m_VRMenu.FindAction("Grab Right", throwIfNotFound: true);
         m_VRMenu_Use = m_VRMenu.FindAction("Use", throwIfNotFound: true);
+        m_VRMenu_PrimaryButtonLeft = m_VRMenu.FindAction("Primary Button Left", throwIfNotFound: true);
+        m_VRMenu_PrimaryButtonRight = m_VRMenu.FindAction("Primary Button Right", throwIfNotFound: true);
+        m_VRMenu_SecondaryButtonLeft = m_VRMenu.FindAction("Secondary Button Left", throwIfNotFound: true);
+        m_VRMenu_SecondaryButtonRight = m_VRMenu.FindAction("Secondary Button Right", throwIfNotFound: true);
+        m_VRMenu_TriggerLeft = m_VRMenu.FindAction("Trigger Left", throwIfNotFound: true);
+        m_VRMenu_TriggerRight = m_VRMenu.FindAction("Trigger Right", throwIfNotFound: true);
+        m_VRMenu_ThumbstickPressLeft = m_VRMenu.FindAction("Thumbstick Press Left", throwIfNotFound: true);
+        m_VRMenu_ThumbstickPressRight = m_VRMenu.FindAction("Thumbstick Press Right", throwIfNotFound: true);
     }
 
     ~@VRMenuInputActions()
@@ -325,6 +493,14 @@ public partial class @VRMenuInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_VRMenu_GrabLeft;
     private readonly InputAction m_VRMenu_GrabRight;
     private readonly InputAction m_VRMenu_Use;
+    private readonly InputAction m_VRMenu_PrimaryButtonLeft;
+    private readonly InputAction m_VRMenu_PrimaryButtonRight;
+    private readonly InputAction m_VRMenu_SecondaryButtonLeft;
+    private readonly InputAction m_VRMenu_SecondaryButtonRight;
+    private readonly InputAction m_VRMenu_TriggerLeft;
+    private readonly InputAction m_VRMenu_TriggerRight;
+    private readonly InputAction m_VRMenu_ThumbstickPressLeft;
+    private readonly InputAction m_VRMenu_ThumbstickPressRight;
     /// <summary>
     /// Provides access to input actions defined in input action map "VR Menu".
     /// </summary>
@@ -352,6 +528,38 @@ public partial class @VRMenuInputActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "VRMenu/Use".
         /// </summary>
         public InputAction @Use => m_Wrapper.m_VRMenu_Use;
+        /// <summary>
+        /// Provides access to the underlying input action "VRMenu/PrimaryButtonLeft".
+        /// </summary>
+        public InputAction @PrimaryButtonLeft => m_Wrapper.m_VRMenu_PrimaryButtonLeft;
+        /// <summary>
+        /// Provides access to the underlying input action "VRMenu/PrimaryButtonRight".
+        /// </summary>
+        public InputAction @PrimaryButtonRight => m_Wrapper.m_VRMenu_PrimaryButtonRight;
+        /// <summary>
+        /// Provides access to the underlying input action "VRMenu/SecondaryButtonLeft".
+        /// </summary>
+        public InputAction @SecondaryButtonLeft => m_Wrapper.m_VRMenu_SecondaryButtonLeft;
+        /// <summary>
+        /// Provides access to the underlying input action "VRMenu/SecondaryButtonRight".
+        /// </summary>
+        public InputAction @SecondaryButtonRight => m_Wrapper.m_VRMenu_SecondaryButtonRight;
+        /// <summary>
+        /// Provides access to the underlying input action "VRMenu/TriggerLeft".
+        /// </summary>
+        public InputAction @TriggerLeft => m_Wrapper.m_VRMenu_TriggerLeft;
+        /// <summary>
+        /// Provides access to the underlying input action "VRMenu/TriggerRight".
+        /// </summary>
+        public InputAction @TriggerRight => m_Wrapper.m_VRMenu_TriggerRight;
+        /// <summary>
+        /// Provides access to the underlying input action "VRMenu/ThumbstickPressLeft".
+        /// </summary>
+        public InputAction @ThumbstickPressLeft => m_Wrapper.m_VRMenu_ThumbstickPressLeft;
+        /// <summary>
+        /// Provides access to the underlying input action "VRMenu/ThumbstickPressRight".
+        /// </summary>
+        public InputAction @ThumbstickPressRight => m_Wrapper.m_VRMenu_ThumbstickPressRight;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -390,6 +598,30 @@ public partial class @VRMenuInputActions: IInputActionCollection2, IDisposable
             @Use.started += instance.OnUse;
             @Use.performed += instance.OnUse;
             @Use.canceled += instance.OnUse;
+            @PrimaryButtonLeft.started += instance.OnPrimaryButtonLeft;
+            @PrimaryButtonLeft.performed += instance.OnPrimaryButtonLeft;
+            @PrimaryButtonLeft.canceled += instance.OnPrimaryButtonLeft;
+            @PrimaryButtonRight.started += instance.OnPrimaryButtonRight;
+            @PrimaryButtonRight.performed += instance.OnPrimaryButtonRight;
+            @PrimaryButtonRight.canceled += instance.OnPrimaryButtonRight;
+            @SecondaryButtonLeft.started += instance.OnSecondaryButtonLeft;
+            @SecondaryButtonLeft.performed += instance.OnSecondaryButtonLeft;
+            @SecondaryButtonLeft.canceled += instance.OnSecondaryButtonLeft;
+            @SecondaryButtonRight.started += instance.OnSecondaryButtonRight;
+            @SecondaryButtonRight.performed += instance.OnSecondaryButtonRight;
+            @SecondaryButtonRight.canceled += instance.OnSecondaryButtonRight;
+            @TriggerLeft.started += instance.OnTriggerLeft;
+            @TriggerLeft.performed += instance.OnTriggerLeft;
+            @TriggerLeft.canceled += instance.OnTriggerLeft;
+            @TriggerRight.started += instance.OnTriggerRight;
+            @TriggerRight.performed += instance.OnTriggerRight;
+            @TriggerRight.canceled += instance.OnTriggerRight;
+            @ThumbstickPressLeft.started += instance.OnThumbstickPressLeft;
+            @ThumbstickPressLeft.performed += instance.OnThumbstickPressLeft;
+            @ThumbstickPressLeft.canceled += instance.OnThumbstickPressLeft;
+            @ThumbstickPressRight.started += instance.OnThumbstickPressRight;
+            @ThumbstickPressRight.performed += instance.OnThumbstickPressRight;
+            @ThumbstickPressRight.canceled += instance.OnThumbstickPressRight;
         }
 
         /// <summary>
@@ -413,6 +645,30 @@ public partial class @VRMenuInputActions: IInputActionCollection2, IDisposable
             @Use.started -= instance.OnUse;
             @Use.performed -= instance.OnUse;
             @Use.canceled -= instance.OnUse;
+            @PrimaryButtonLeft.started -= instance.OnPrimaryButtonLeft;
+            @PrimaryButtonLeft.performed -= instance.OnPrimaryButtonLeft;
+            @PrimaryButtonLeft.canceled -= instance.OnPrimaryButtonLeft;
+            @PrimaryButtonRight.started -= instance.OnPrimaryButtonRight;
+            @PrimaryButtonRight.performed -= instance.OnPrimaryButtonRight;
+            @PrimaryButtonRight.canceled -= instance.OnPrimaryButtonRight;
+            @SecondaryButtonLeft.started -= instance.OnSecondaryButtonLeft;
+            @SecondaryButtonLeft.performed -= instance.OnSecondaryButtonLeft;
+            @SecondaryButtonLeft.canceled -= instance.OnSecondaryButtonLeft;
+            @SecondaryButtonRight.started -= instance.OnSecondaryButtonRight;
+            @SecondaryButtonRight.performed -= instance.OnSecondaryButtonRight;
+            @SecondaryButtonRight.canceled -= instance.OnSecondaryButtonRight;
+            @TriggerLeft.started -= instance.OnTriggerLeft;
+            @TriggerLeft.performed -= instance.OnTriggerLeft;
+            @TriggerLeft.canceled -= instance.OnTriggerLeft;
+            @TriggerRight.started -= instance.OnTriggerRight;
+            @TriggerRight.performed -= instance.OnTriggerRight;
+            @TriggerRight.canceled -= instance.OnTriggerRight;
+            @ThumbstickPressLeft.started -= instance.OnThumbstickPressLeft;
+            @ThumbstickPressLeft.performed -= instance.OnThumbstickPressLeft;
+            @ThumbstickPressLeft.canceled -= instance.OnThumbstickPressLeft;
+            @ThumbstickPressRight.started -= instance.OnThumbstickPressRight;
+            @ThumbstickPressRight.performed -= instance.OnThumbstickPressRight;
+            @ThumbstickPressRight.canceled -= instance.OnThumbstickPressRight;
         }
 
         /// <summary>
@@ -494,5 +750,61 @@ public partial class @VRMenuInputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnUse(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Primary Button Left" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnPrimaryButtonLeft(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Primary Button Right" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnPrimaryButtonRight(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Secondary Button Left" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSecondaryButtonLeft(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Secondary Button Right" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSecondaryButtonRight(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Trigger Left" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnTriggerLeft(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Trigger Right" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnTriggerRight(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Thumbstick Press Left" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnThumbstickPressLeft(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Thumbstick Press Right" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnThumbstickPressRight(InputAction.CallbackContext context);
     }
 }

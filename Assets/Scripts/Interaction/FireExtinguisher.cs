@@ -21,14 +21,21 @@ namespace Interaction
         [SerializeField] private GameObject secondaryGripHandle;
         [SerializeField] private float secondaryGripDistance = 0.5f;
 
-        private InputAction useAction;
+        [Header("Safety Pin")]
+        [SerializeField] private bool safetyPinEnabled = true;
+
         private Transform secondaryHand;
         private bool isSecondaryGrabbed;
+
+        private InputAction triggerLeftAction;
+        private InputAction triggerRightAction;
 
         protected override void Awake()
         {
             base.Awake();
-            useAction = inputActions.VRMenu.Use;
+
+            triggerLeftAction = inputActions.VRMenu.Get().FindAction("Trigger Left");
+            triggerRightAction = inputActions.VRMenu.Get().FindAction("Trigger Right");
 
             if (secondaryGripHandle != null)
             {
@@ -39,33 +46,25 @@ namespace Interaction
         protected override void OnEnable()
         {
             base.OnEnable();
-            useAction.performed += OnUsePerformed;
             grabLeftAction.performed += OnSecondaryGrabPerformed;
             grabRightAction.performed += OnSecondaryGrabPerformed;
             grabLeftAction.canceled += OnSecondaryGrabCanceled;
             grabRightAction.canceled += OnSecondaryGrabCanceled;
+
+            triggerLeftAction.performed += OnTriggerLeftPerformed;
+            triggerRightAction.performed += OnTriggerRightPerformed;
         }
 
         protected override void OnDisable()
         {
             base.OnDisable();
-            useAction.performed -= OnUsePerformed;
             grabLeftAction.performed -= OnSecondaryGrabPerformed;
             grabRightAction.performed -= OnSecondaryGrabPerformed;
             grabLeftAction.canceled -= OnSecondaryGrabCanceled;
             grabRightAction.canceled -= OnSecondaryGrabCanceled;
-        }
 
-        private void OnUsePerformed(InputAction.CallbackContext context)
-        {
-            if (isGrabbed)
-            {
-                Use();
-            }
-        }
-
-        private void Use()
-        {
+            triggerLeftAction.performed -= OnTriggerLeftPerformed;
+            triggerRightAction.performed -= OnTriggerRightPerformed;
         }
 
         protected override void Update()
@@ -146,6 +145,22 @@ namespace Interaction
                 return rightHand;
 
             return null;
+        }
+
+        private void OnTriggerLeftPerformed(InputAction.CallbackContext context)
+        {
+            if (!isGrabbed) return;
+
+            string holdingState = isSecondaryGrabbed ? "Grip Extincteur" : "Extincteur";
+            Debug.Log($"Trigger Left - {holdingState}");
+        }
+
+        private void OnTriggerRightPerformed(InputAction.CallbackContext context)
+        {
+            if (!isGrabbed) return;
+
+            string holdingState = isSecondaryGrabbed ? "Grip Extincteur" : "Extincteur";
+            Debug.Log($"Trigger Right - {holdingState}");
         }
 
         private void FollowHandleToSecondaryHand()

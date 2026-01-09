@@ -26,6 +26,9 @@ namespace Interaction
         protected InputAction grabLeftAction;
         protected InputAction grabRightAction;
 
+        private const string LeftHandTag = "LeftHand";
+        private const string RightHandTag = "RightHand";
+
         private Transform leftHand;
         private Transform rightHand;
 
@@ -37,31 +40,21 @@ namespace Interaction
             grabRightAction = inputActions.VRMenu.GrabRight;
         }
 
-        private Transform GetLeftHand()
+        private Transform GetHand(string handTag, ref Transform cachedHand)
         {
-            if (leftHand == null)
+            if (cachedHand == null)
             {
-                GameObject leftHandGO = GameObject.FindGameObjectWithTag("LeftHand");
-                if (leftHandGO != null)
+                GameObject handGO = GameObject.FindGameObjectWithTag(handTag);
+                if (handGO != null)
                 {
-                    leftHand = leftHandGO.transform;
+                    cachedHand = handGO.transform;
                 }
             }
-            return leftHand;
+            return cachedHand;
         }
 
-        private Transform GetRightHand()
-        {
-            if (rightHand == null)
-            {
-                GameObject rightHandGO = GameObject.FindGameObjectWithTag("RightHand");
-                if (rightHandGO != null)
-                {
-                    rightHand = rightHandGO.transform;
-                }
-            }
-            return rightHand;
-        }
+        private Transform GetLeftHand() => GetHand(LeftHandTag, ref leftHand);
+        private Transform GetRightHand() => GetHand(RightHandTag, ref rightHand);
 
         protected virtual void OnEnable()
         {
@@ -79,6 +72,9 @@ namespace Interaction
             grabRightAction.performed -= OnGrabRightPerformed;
             grabRightAction.canceled -= OnGrabRightCanceled;
             inputActions.Disable();
+
+            leftHand = null;
+            rightHand = null;
         }
 
         protected virtual void Update()
