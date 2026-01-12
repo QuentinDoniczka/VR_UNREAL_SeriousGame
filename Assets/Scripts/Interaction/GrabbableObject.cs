@@ -8,6 +8,7 @@ namespace Interaction
     {
         [Header("Grab Settings")]
         [SerializeField] protected float grabDistance = 100.5f;
+        [SerializeField] protected float sphereCastRadius = 0.05f;
         [SerializeField] protected LayerMask grabLayerMask = ~0;
 
         [Header("Hold Position & Rotation")]
@@ -18,9 +19,14 @@ namespace Interaction
         [SerializeField] protected float positionFollowSpeed = 20f;
         [SerializeField] protected float rotationFollowSpeed = 20f;
 
+        [Header("Highlight Settings")]
+        [SerializeField] private bool enableHighlight = true;
+        [SerializeField] private float hoverStabilityTime = 0.1f;
+
         protected bool isGrabbed;
         protected Transform handTransform;
         protected Rigidbody rb;
+        protected InteractableHighlight highlight;
 
         protected VRMenuInputActions inputActions;
         protected InputAction grabLeftAction;
@@ -31,13 +37,39 @@ namespace Interaction
 
         private Transform leftHand;
         private Transform rightHand;
+        private bool isLeftHandHovering;
+        private bool isRightHandHovering;
+        private bool isHighlightActive;
+        private float hoverTimer;
 
         protected virtual void Awake()
         {
             rb = GetComponent<Rigidbody>();
+            SetupHighlight();
             inputActions = new VRMenuInputActions();
             grabLeftAction = inputActions.VRMenu.GrabLeft;
             grabRightAction = inputActions.VRMenu.GrabRight;
+        }
+
+        private void SetupHighlight()
+        {
+            if (enableHighlight)
+            {
+                highlight = GetComponent<InteractableHighlight>();
+                if (highlight == null)
+                {
+                    highlight = gameObject.AddComponent<InteractableHighlight>();
+                }
+            }
+            else
+            {
+                highlight = GetComponent<InteractableHighlight>();
+                if (highlight != null)
+                {
+                    Destroy(highlight);
+                    highlight = null;
+                }
+            }
         }
 
         private Transform GetHand(string handTag, ref Transform cachedHand)
@@ -82,6 +114,47 @@ namespace Interaction
             if (isGrabbed && handTransform != null)
             {
                 FollowHand();
+            }
+            else
+            {
+                UpdateHoverState();
+            }
+        }
+
+        private void UpdateHoverState()
+        {
+            if (highlight == null) return;
+
+            Transform leftHandTransform = GetLeftHand();
+            Transform rightHandTransform = GetRightHand();
+
+            isLeftHandHovering = leftHandTransform != null && IsHandInRange(leftHandTransform);
+            isRightHandHovering = rightHandTransform != null && IsHandInRange(rightHandTransform);
+
+            bool shouldBeHighlighted = isLeftHandHovering || isRightHandHovering;
+
+            if (shouldBeHighlighted && !isHighlightActive)
+            {
+                hoverTimer += Time.deltaTime;
+                if (hoverTimer >= hoverStabilityTime)
+                {
+                    isHighlightActive = true;
+                    highlight.SetHighlighted(true);
+                }
+            }
+            else if (!shouldBeHighlighted && isHighlightActive)
+            {
+                hoverTimer = 0f;
+                isHighlightActive = false;
+                highlight.SetHighlighted(false);
+            }
+            else if (shouldBeHighlighted && isHighlightActive)
+            {
+                hoverTimer = hoverStabilityTime;
+            }
+            else
+            {
+                hoverTimer = Mathf.Max(0f, hoverTimer - Time.deltaTime * 2f);
             }
         }
 
@@ -134,6 +207,13 @@ namespace Interaction
             isGrabbed = true;
             handTransform = hand;
             rb.isKinematic = true;
+
+            hoverTimer = 0f;
+            isHighlightActive = false;
+            if (highlight != null)
+            {
+                highlight.SetHighlighted(false);
+            }
         }
 
         protected virtual void Release()
@@ -155,7 +235,7 @@ namespace Interaction
 
         protected virtual bool IsHandInRange(Transform hand)
         {
-            if (Physics.Raycast(hand.position, hand.forward, out RaycastHit hit, grabDistance, grabLayerMask))
+            if (Physics.SphereCast(hand.position, sphereCastRadius, hand.forward, out RaycastHit hit, grabDistance, grabLayerMask))
             {
                 return hit.collider.gameObject == gameObject || hit.collider.transform.IsChildOf(transform);
             }
