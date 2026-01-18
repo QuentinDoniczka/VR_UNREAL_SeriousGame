@@ -24,11 +24,23 @@ namespace Interaction
         [Header("Safety Pin")]
         [SerializeField] private bool safetyPinEnabled = true;
 
+        [Header("Spray Settings")]
+        [SerializeField] private float sprayRange = 5f;
+        [SerializeField] private float sprayConeAngle = 30f;
+        [SerializeField] private Material sprayConeMaterial;
+        [SerializeField] private LayerMask sprayLayerMask = ~0;
+
         private Transform secondaryHand;
         private bool isSecondaryGrabbed;
+        private bool isSpraying;
+        private GameObject sprayVisualCone;
 
         private InputAction triggerLeftAction;
         private InputAction triggerRightAction;
+
+        private Transform cachedLeftHand;
+        private Transform cachedRightHand;
+        private bool handsCached;
 
         protected override void Awake()
         {
@@ -41,6 +53,21 @@ namespace Interaction
             {
                 secondaryGripHandle.SetActive(false);
             }
+
+            CreateSprayVisual();
+        }
+
+        private void EnsureHandsCached()
+        {
+            if (handsCached) return;
+
+            GameObject leftHandGO = GameObject.FindGameObjectWithTag("LeftHand");
+            GameObject rightHandGO = GameObject.FindGameObjectWithTag("RightHand");
+
+            cachedLeftHand = leftHandGO != null ? leftHandGO.transform : null;
+            cachedRightHand = rightHandGO != null ? rightHandGO.transform : null;
+
+            handsCached = cachedLeftHand != null && cachedRightHand != null;
         }
 
         protected override void OnEnable()
@@ -75,6 +102,14 @@ namespace Interaction
             {
                 FollowHandleToSecondaryHand();
             }
+
+            if (isSpraying)
+            {
+                UpdateSprayVisual();
+                DetectObjectsInCone();
+            }
+
+            UpdateTriggerState();
         }
 
         private void OnSecondaryGrabPerformed(InputAction.CallbackContext context)
@@ -117,50 +152,85 @@ namespace Interaction
 
         private Transform GetFreeHand()
         {
-            GameObject leftHandGO = GameObject.FindGameObjectWithTag("LeftHand");
-            GameObject rightHandGO = GameObject.FindGameObjectWithTag("RightHand");
+            EnsureHandsCached();
 
-            Transform leftHand = leftHandGO != null ? leftHandGO.transform : null;
-            Transform rightHand = rightHandGO != null ? rightHandGO.transform : null;
-
-            if (handTransform == leftHand)
-                return rightHand;
-            else if (handTransform == rightHand)
-                return leftHand;
+            if (handTransform == cachedLeftHand)
+                return cachedRightHand;
+            if (handTransform == cachedRightHand)
+                return cachedLeftHand;
 
             return null;
         }
 
         private Transform GetHandFromContext(InputAction.CallbackContext context)
         {
-            GameObject leftHandGO = GameObject.FindGameObjectWithTag("LeftHand");
-            GameObject rightHandGO = GameObject.FindGameObjectWithTag("RightHand");
-
-            Transform leftHand = leftHandGO != null ? leftHandGO.transform : null;
-            Transform rightHand = rightHandGO != null ? rightHandGO.transform : null;
+            EnsureHandsCached();
 
             if (context.action == grabLeftAction)
-                return leftHand;
-            else if (context.action == grabRightAction)
-                return rightHand;
+                return cachedLeftHand;
+            if (context.action == grabRightAction)
+                return cachedRightHand;
 
             return null;
         }
 
         private void OnTriggerLeftPerformed(InputAction.CallbackContext context)
         {
-            if (!isGrabbed) return;
-
-            string holdingState = isSecondaryGrabbed ? "Grip Extincteur" : "Extincteur";
-            Debug.Log($"Trigger Left - {holdingState}");
+            Debug.Log("LEFT TRIGGER PERFORMED");
         }
 
         private void OnTriggerRightPerformed(InputAction.CallbackContext context)
         {
-            if (!isGrabbed) return;
+            Debug.Log("RIGHT TRIGGER PERFORMED");
+        }
 
-            string holdingState = isSecondaryGrabbed ? "Grip Extincteur" : "Extincteur";
-            Debug.Log($"Trigger Right - {holdingState}");
+        private void UpdateTriggerState()
+        {
+            if (!isGrabbed || !isSecondaryGrabbed)
+            {
+                StopSpray();
+                return;
+            }
+
+            if (safetyPinEnabled)
+            {
+                StopSpray();
+                return;
+            }
+
+            EnsureHandsCached();
+
+            bool triggerPressed = false;
+
+            if (secondaryHand != null)
+            {
+                float leftValue = triggerLeftAction.ReadValue<float>();
+                float rightValue = triggerRightAction.ReadValue<float>();
+
+                if (secondaryHand == cachedLeftHand)
+                {
+                    triggerPressed = leftValue > 0.5f;
+                    if (leftValue > 0.1f)
+                        Debug.Log($"SECONDARY HAND (LEFT) TRIGGER VALUE: {leftValue}");
+                }
+                else if (secondaryHand == cachedRightHand)
+                {
+                    triggerPressed = rightValue > 0.5f;
+                    if (rightValue > 0.1f)
+                        Debug.Log($"SECONDARY HAND (RIGHT) TRIGGER VALUE: {rightValue}");
+                }
+            }
+
+            if (triggerPressed && !isSpraying)
+            {
+                Debug.Log("STARTING SPRAY FROM SECONDARY HAND!");
+                StartSpray();
+            }
+            else if (!triggerPressed && isSpraying)
+            {
+                Debug.Log("STOP SPRAY!");
+                StopSpray();
+            }
         }
 
         private void FollowHandleToSecondaryHand()
@@ -189,6 +259,130 @@ namespace Interaction
             if (secondaryGripHandle != null)
             {
                 secondaryGripHandle.SetActive(false);
+            }
+
+            StopSpray();
+        }
+
+        private void CreateSprayVisual()
+        {
+            sprayVisualCone = new GameObject("SprayCone");
+            sprayVisualCone.transform.SetParent(transform);
+            sprayVisualCone.transform.localPosition = Vector3.zero;
+            sprayVisualCone.transform.localRotation = Quaternion.identity;
+
+            MeshFilter meshFilter = sprayVisualCone.AddComponent<MeshFilter>();
+            MeshRenderer meshRenderer = sprayVisualCone.AddComponent<MeshRenderer>();
+
+            meshFilter.mesh = CreateConeMesh();
+
+            if (sprayConeMaterial != null)
+                meshRenderer.material = sprayConeMaterial;
+            else
+            {
+                Material defaultMat = new Material(Shader.Find("Standard"));
+                defaultMat.color = new Color(1f, 1f, 1f, 0.3f);
+                defaultMat.SetFloat("_Mode", 3);
+                defaultMat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+                defaultMat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                defaultMat.SetInt("_ZWrite", 0);
+                defaultMat.DisableKeyword("_ALPHATEST_ON");
+                defaultMat.EnableKeyword("_ALPHABLEND_ON");
+                defaultMat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+                defaultMat.renderQueue = 3000;
+                meshRenderer.material = defaultMat;
+            }
+
+            sprayVisualCone.SetActive(false);
+        }
+
+        private Mesh CreateConeMesh()
+        {
+            Mesh mesh = new Mesh();
+            int segments = 20;
+            float angle = sprayConeAngle;
+            float range = sprayRange;
+
+            Vector3[] vertices = new Vector3[segments + 2];
+            int[] triangles = new int[segments * 6];
+
+            vertices[0] = Vector3.zero;
+
+            float radius = Mathf.Tan(angle * Mathf.Deg2Rad) * range;
+
+            for (int i = 0; i <= segments; i++)
+            {
+                float currentAngle = (i / (float)segments) * Mathf.PI * 2f;
+                float x = Mathf.Cos(currentAngle) * radius;
+                float y = Mathf.Sin(currentAngle) * radius;
+                vertices[i + 1] = new Vector3(x, y, range);
+            }
+
+            for (int i = 0; i < segments; i++)
+            {
+                int triIndex = i * 6;
+                triangles[triIndex] = 0;
+                triangles[triIndex + 1] = i + 1;
+                triangles[triIndex + 2] = i + 2;
+
+                triangles[triIndex + 3] = 0;
+                triangles[triIndex + 4] = i + 2;
+                triangles[triIndex + 5] = i + 1;
+            }
+
+            mesh.vertices = vertices;
+            mesh.triangles = triangles;
+            mesh.RecalculateNormals();
+
+            return mesh;
+        }
+
+        private void StartSpray()
+        {
+            isSpraying = true;
+            if (sprayVisualCone != null)
+                sprayVisualCone.SetActive(true);
+
+            Debug.Log("=== SPRAY STARTED ===");
+        }
+
+        private void StopSpray()
+        {
+            if (!isSpraying) return;
+
+            isSpraying = false;
+            if (sprayVisualCone != null)
+                sprayVisualCone.SetActive(false);
+
+            Debug.Log("=== SPRAY STOPPED ===");
+        }
+
+        private void UpdateSprayVisual()
+        {
+            if (sprayVisualCone == null || secondaryHand == null) return;
+
+            sprayVisualCone.transform.position = secondaryHand.position;
+            sprayVisualCone.transform.rotation = secondaryHand.rotation;
+        }
+
+        private void DetectObjectsInCone()
+        {
+            if (secondaryHand == null) return;
+
+            Vector3 origin = secondaryHand.position;
+            Vector3 direction = secondaryHand.forward;
+
+            Collider[] hits = Physics.OverlapSphere(origin, sprayRange, sprayLayerMask);
+
+            foreach (Collider hit in hits)
+            {
+                Vector3 dirToTarget = hit.transform.position - origin;
+                float angleToTarget = Vector3.Angle(direction, dirToTarget);
+
+                if (angleToTarget <= sprayConeAngle)
+                {
+                    Debug.Log($"Spraying on: {hit.gameObject.name}");
+                }
             }
         }
 

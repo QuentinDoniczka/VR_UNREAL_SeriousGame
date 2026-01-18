@@ -1674,7 +1674,13 @@ MonoBehaviour:
   secondaryGripPoint: {fileID: 0}
   secondaryGripHandle: {fileID: 2031969663}
   secondaryGripDistance: 0.5
-  safetyPinEnabled: 1
+  safetyPinEnabled: 0
+  sprayRange: 5
+  sprayConeAngle: 30
+  sprayConeMaterial: {fileID: 0}
+  sprayLayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!54 &1389839020
 Rigidbody:
   m_ObjectHideFlags: 0
