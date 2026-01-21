@@ -23,6 +23,16 @@ When you implement a feature:
 3) Use Read/Edit/Write tools to modify files directly.
 4) Explain what was changed and why after modifications.
 
+When a task requires creating or modifying GameObjects in the Unity scene:
+Since I cannot directly manipulate the Unity Editor, provide detailed step-by-step instructions:
+1) List each GameObject to create (name, hierarchy position).
+2) Specify components to add on each GameObject (with their types).
+3) Detail serialized fields to configure (values, references to assign).
+4) Describe hierarchy relationships (parent/child structure).
+5) Mention any required assets (materials, prefabs, audio clips) and where to find/create them.
+6) Include layer/tag assignments if relevant.
+Format these instructions clearly so the user can replicate the setup in the Editor.
+
 Communication:
 - Write clear, structured explanations with proper formatting.
 - Break down complex responses into digestible sections.
