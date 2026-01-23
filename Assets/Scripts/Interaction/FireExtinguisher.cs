@@ -17,21 +17,16 @@ namespace Interaction
         [Header("Safety Pin")]
         [SerializeField] private bool safetyPinEnabled = false;
 
-        [Header("Spray Settings")]
-        [SerializeField] private float sprayRange = 5f;
-        [SerializeField] private float sprayConeAngle = 30f;
-        [SerializeField] private LayerMask sprayLayerMask = ~0;
-
         [Header("Spray Cone")]
         [SerializeField] private GameObject sprayCone;
         [SerializeField] private bool showSprayConeVisual = true;
 
+        [Header("Input")]
+        [SerializeField] private float triggerThreshold = 0.5f;
+
         private Transform secondaryHand;
         private bool isSecondaryGrabbed;
         private bool isSpraying;
-
-        private const int MaxSprayHits = 32;
-        private readonly Collider[] sprayHitsBuffer = new Collider[MaxSprayHits];
 
         protected override void Awake()
         {
@@ -55,38 +50,46 @@ namespace Interaction
         protected override void OnEnable()
         {
             base.OnEnable();
-
-            var input = InputManager.Instance;
-            if (input == null) return;
-
-            if (input.GrabLeft != null)
-            {
-                input.GrabLeft.performed += OnSecondaryGrabPerformed;
-                input.GrabLeft.canceled += OnSecondaryGrabCanceled;
-            }
-            if (input.GrabRight != null)
-            {
-                input.GrabRight.performed += OnSecondaryGrabPerformed;
-                input.GrabRight.canceled += OnSecondaryGrabCanceled;
-            }
+            SubscribeToGrabInputs(true);
         }
 
         protected override void OnDisable()
         {
             base.OnDisable();
+            SubscribeToGrabInputs(false);
+        }
 
+        private void SubscribeToGrabInputs(bool subscribe)
+        {
             var input = InputManager.Instance;
             if (input == null) return;
 
             if (input.GrabLeft != null)
             {
-                input.GrabLeft.performed -= OnSecondaryGrabPerformed;
-                input.GrabLeft.canceled -= OnSecondaryGrabCanceled;
+                if (subscribe)
+                {
+                    input.GrabLeft.performed += OnSecondaryGrabPerformed;
+                    input.GrabLeft.canceled += OnSecondaryGrabCanceled;
+                }
+                else
+                {
+                    input.GrabLeft.performed -= OnSecondaryGrabPerformed;
+                    input.GrabLeft.canceled -= OnSecondaryGrabCanceled;
+                }
             }
+
             if (input.GrabRight != null)
             {
-                input.GrabRight.performed -= OnSecondaryGrabPerformed;
-                input.GrabRight.canceled -= OnSecondaryGrabCanceled;
+                if (subscribe)
+                {
+                    input.GrabRight.performed += OnSecondaryGrabPerformed;
+                    input.GrabRight.canceled += OnSecondaryGrabCanceled;
+                }
+                else
+                {
+                    input.GrabRight.performed -= OnSecondaryGrabPerformed;
+                    input.GrabRight.canceled -= OnSecondaryGrabCanceled;
+                }
             }
         }
 
@@ -97,11 +100,6 @@ namespace Interaction
             if (isSecondaryGrabbed && secondaryHand != null && secondaryGripHandle != null)
             {
                 FollowHandleToSecondaryHand();
-            }
-
-            if (isSpraying)
-            {
-                DetectObjectsInCone();
             }
 
             UpdateTriggerState();
@@ -169,35 +167,39 @@ namespace Interaction
 
         private void UpdateTriggerState()
         {
-            if (!isGrabbed || !isSecondaryGrabbed)
+            if (!CanSpray())
             {
                 StopSpray();
                 return;
             }
 
-            if (safetyPinEnabled)
-            {
-                StopSpray();
-                return;
-            }
-
-            bool triggerPressed = false;
-
-            if (secondaryHand != null)
-            {
-                var input = InputManager.Instance;
-                if (input == null) return;
-
-                if (secondaryHand == GetLeftHand() && input.TriggerLeft != null)
-                    triggerPressed = input.TriggerLeft.ReadValue<float>() > 0.5f;
-                else if (secondaryHand == GetRightHand() && input.TriggerRight != null)
-                    triggerPressed = input.TriggerRight.ReadValue<float>() > 0.5f;
-            }
+            bool triggerPressed = IsSecondaryTriggerPressed();
 
             if (triggerPressed && !isSpraying)
                 StartSpray();
             else if (!triggerPressed && isSpraying)
                 StopSpray();
+        }
+
+        private bool CanSpray()
+        {
+            return isGrabbed && isSecondaryGrabbed && !safetyPinEnabled;
+        }
+
+        private bool IsSecondaryTriggerPressed()
+        {
+            if (secondaryHand == null) return false;
+
+            var input = InputManager.Instance;
+            if (input == null) return false;
+
+            if (secondaryHand == GetLeftHand() && input.TriggerLeft != null)
+                return input.TriggerLeft.ReadValue<float>() > triggerThreshold;
+
+            if (secondaryHand == GetRightHand() && input.TriggerRight != null)
+                return input.TriggerRight.ReadValue<float>() > triggerThreshold;
+
+            return false;
         }
 
         private void FollowHandleToSecondaryHand()
@@ -245,27 +247,6 @@ namespace Interaction
             isSpraying = false;
             if (sprayCone != null)
                 sprayCone.SetActive(false);
-        }
-
-        private void DetectObjectsInCone()
-        {
-            if (secondaryGripHandle == null) return;
-
-            Vector3 origin = secondaryGripHandle.transform.position;
-            Vector3 direction = secondaryGripHandle.transform.forward;
-
-            int hitCount = Physics.OverlapSphereNonAlloc(origin, sprayRange, sprayHitsBuffer, sprayLayerMask);
-
-            for (int i = 0; i < hitCount; i++)
-            {
-                Collider hit = sprayHitsBuffer[i];
-                Vector3 dirToTarget = hit.transform.position - origin;
-                float angleToTarget = Vector3.Angle(direction, dirToTarget);
-
-                if (angleToTarget > sprayConeAngle) continue;
-
-                // TODO: Apply extinguisher effect to hit.gameObject
-            }
         }
 
         public ExtinguisherType Type => extinguisherType;
