@@ -30,7 +30,8 @@ namespace Core.Managers
 
         private void InitializeManagers()
         {
-            SceneManager sceneManager = gameObject.AddComponent<SceneManager>();
+            gameObject.AddComponent<VRHandsManager>();
+            gameObject.AddComponent<SceneManager>();
         }
     }
 }

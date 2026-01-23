@@ -15,7 +15,6 @@ namespace Interaction
     {
         [Header("Fire Extinguisher Settings")]
         [SerializeField] private ExtinguisherType extinguisherType = ExtinguisherType.CO2;
-        [SerializeField] private Transform nozzle;
 
         [Header("Two-Handed Grip")]
         [SerializeField] private Transform secondaryGripPoint;
@@ -23,29 +22,26 @@ namespace Interaction
         [SerializeField] private float secondaryGripDistance = 0.5f;
 
         [Header("Safety Pin")]
-        [SerializeField] private bool safetyPinEnabled = true;
+        [SerializeField] private bool safetyPinEnabled = false;
 
         [Header("Spray Settings")]
         [SerializeField] private float sprayRange = 5f;
         [SerializeField] private float sprayConeAngle = 30f;
         [SerializeField] private LayerMask sprayLayerMask = ~0;
 
-        [Header("Debug Hitbox Visual")]
-        [SerializeField] private bool showDebugHitbox = true;
-        [SerializeField] private Material debugHitboxMaterial;
+        [Header("Spray Cone")]
+        [SerializeField] private GameObject sprayCone;
+        [SerializeField] private bool showSprayConeVisual = true;
 
         private Transform secondaryHand;
         private bool isSecondaryGrabbed;
         private bool isSpraying;
-        private GameObject debugHitboxVisual;
 
         private InputAction triggerLeftAction;
         private InputAction triggerRightAction;
-        private Material createdDebugMaterial;
 
-        private Transform cachedLeftHand;
-        private Transform cachedRightHand;
-        private bool handsCached;
+        private const int MaxSprayHits = 32;
+        private readonly Collider[] sprayHitsBuffer = new Collider[MaxSprayHits];
 
         protected override void Awake()
         {
@@ -59,23 +55,14 @@ namespace Interaction
                 secondaryGripHandle.SetActive(false);
             }
 
-            if (showDebugHitbox)
+            if (sprayCone == null)
             {
-                CreateDebugHitboxVisual();
+                Debug.LogWarning("[FireExtinguisher] Spray Cone is not assigned. Spray detection will not work.", this);
             }
-        }
-
-        private void EnsureHandsCached()
-        {
-            if (handsCached) return;
-
-            GameObject leftHandGO = GameObject.FindGameObjectWithTag("LeftHand");
-            GameObject rightHandGO = GameObject.FindGameObjectWithTag("RightHand");
-
-            cachedLeftHand = leftHandGO != null ? leftHandGO.transform : null;
-            cachedRightHand = rightHandGO != null ? rightHandGO.transform : null;
-
-            handsCached = cachedLeftHand != null && cachedRightHand != null;
+            else
+            {
+                sprayCone.SetActive(false);
+            }
         }
 
         protected override void OnEnable()
@@ -106,14 +93,6 @@ namespace Interaction
             triggerRightAction.canceled -= OnTriggerRightCanceled;
         }
 
-        private void OnDestroy()
-        {
-            if (createdDebugMaterial != null)
-            {
-                Destroy(createdDebugMaterial);
-            }
-        }
-
         protected override void Update()
         {
             base.Update();
@@ -125,7 +104,6 @@ namespace Interaction
 
             if (isSpraying)
             {
-                UpdateDebugHitboxVisual();
                 DetectObjectsInCone();
             }
 
@@ -172,24 +150,20 @@ namespace Interaction
 
         private Transform GetFreeHand()
         {
-            EnsureHandsCached();
-
-            if (handTransform == cachedLeftHand)
-                return cachedRightHand;
-            if (handTransform == cachedRightHand)
-                return cachedLeftHand;
+            if (handTransform == GetLeftHand())
+                return GetRightHand();
+            if (handTransform == GetRightHand())
+                return GetLeftHand();
 
             return null;
         }
 
         private Transform GetHandFromContext(InputAction.CallbackContext context)
         {
-            EnsureHandsCached();
-
             if (context.action == grabLeftAction)
-                return cachedLeftHand;
+                return GetLeftHand();
             if (context.action == grabRightAction)
-                return cachedRightHand;
+                return GetRightHand();
 
             return null;
         }
@@ -228,8 +202,6 @@ namespace Interaction
                 return;
             }
 
-            EnsureHandsCached();
-
             bool triggerPressed = false;
 
             if (secondaryHand != null)
@@ -237,9 +209,9 @@ namespace Interaction
                 float leftValue = triggerLeftAction.ReadValue<float>();
                 float rightValue = triggerRightAction.ReadValue<float>();
 
-                if (secondaryHand == cachedLeftHand)
+                if (secondaryHand == GetLeftHand())
                     triggerPressed = leftValue > 0.5f;
-                else if (secondaryHand == cachedRightHand)
+                else if (secondaryHand == GetRightHand())
                     triggerPressed = rightValue > 0.5f;
             }
 
@@ -280,52 +252,11 @@ namespace Interaction
             StopSpray();
         }
 
-        private void CreateDebugHitboxVisual()
-        {
-            debugHitboxVisual = new GameObject("DebugHitboxCone");
-            debugHitboxVisual.transform.SetParent(transform);
-            debugHitboxVisual.transform.localPosition = Vector3.zero;
-            debugHitboxVisual.transform.localRotation = Quaternion.identity;
-
-            MeshFilter meshFilter = debugHitboxVisual.AddComponent<MeshFilter>();
-            MeshRenderer meshRenderer = debugHitboxVisual.AddComponent<MeshRenderer>();
-
-            meshFilter.mesh = MeshGenerator.CreateCone(sprayRange, sprayConeAngle);
-
-            if (debugHitboxMaterial != null)
-            {
-                meshRenderer.material = debugHitboxMaterial;
-            }
-            else
-            {
-                Shader standardShader = Shader.Find("Standard");
-                if (standardShader == null)
-                {
-                    Debug.LogError("[FireExtinguisher] Standard shader not found. Assign a debugHitboxMaterial in the inspector.", this);
-                    return;
-                }
-
-                createdDebugMaterial = new Material(standardShader);
-                createdDebugMaterial.color = new Color(1f, 1f, 1f, 0.3f);
-                createdDebugMaterial.SetFloat("_Mode", 3);
-                createdDebugMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-                createdDebugMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                createdDebugMaterial.SetInt("_ZWrite", 0);
-                createdDebugMaterial.DisableKeyword("_ALPHATEST_ON");
-                createdDebugMaterial.EnableKeyword("_ALPHABLEND_ON");
-                createdDebugMaterial.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-                createdDebugMaterial.renderQueue = 3000;
-                meshRenderer.material = createdDebugMaterial;
-            }
-
-            debugHitboxVisual.SetActive(false);
-        }
-
         private void StartSpray()
         {
             isSpraying = true;
-            if (debugHitboxVisual != null)
-                debugHitboxVisual.SetActive(true);
+            if (sprayCone != null && showSprayConeVisual)
+                sprayCone.SetActive(true);
         }
 
         private void StopSpray()
@@ -333,16 +264,8 @@ namespace Interaction
             if (!isSpraying) return;
 
             isSpraying = false;
-            if (debugHitboxVisual != null)
-                debugHitboxVisual.SetActive(false);
-        }
-
-        private void UpdateDebugHitboxVisual()
-        {
-            if (debugHitboxVisual == null || secondaryGripHandle == null) return;
-
-            debugHitboxVisual.transform.position = secondaryGripHandle.transform.position;
-            debugHitboxVisual.transform.rotation = secondaryGripHandle.transform.rotation;
+            if (sprayCone != null)
+                sprayCone.SetActive(false);
         }
 
         private void DetectObjectsInCone()
@@ -352,10 +275,11 @@ namespace Interaction
             Vector3 origin = secondaryGripHandle.transform.position;
             Vector3 direction = secondaryGripHandle.transform.forward;
 
-            Collider[] hits = Physics.OverlapSphere(origin, sprayRange, sprayLayerMask);
+            int hitCount = Physics.OverlapSphereNonAlloc(origin, sprayRange, sprayHitsBuffer, sprayLayerMask);
 
-            foreach (Collider hit in hits)
+            for (int i = 0; i < hitCount; i++)
             {
+                Collider hit = sprayHitsBuffer[i];
                 Vector3 dirToTarget = hit.transform.position - origin;
                 float angleToTarget = Vector3.Angle(direction, dirToTarget);
 

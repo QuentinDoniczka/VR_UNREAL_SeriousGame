@@ -85,8 +85,8 @@ namespace Interaction
             return cachedHand;
         }
 
-        private Transform GetLeftHand() => GetHand(LeftHandTag, ref leftHand);
-        private Transform GetRightHand() => GetHand(RightHandTag, ref rightHand);
+        protected Transform GetLeftHand() => GetHand(LeftHandTag, ref leftHand);
+        protected Transform GetRightHand() => GetHand(RightHandTag, ref rightHand);
 
         protected virtual void OnEnable()
         {
