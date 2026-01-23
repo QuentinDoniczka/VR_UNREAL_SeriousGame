@@ -30,6 +30,7 @@ namespace Core.Managers
 
         private void InitializeManagers()
         {
+            gameObject.AddComponent<InputManager>();
             gameObject.AddComponent<VRHandsManager>();
             gameObject.AddComponent<SceneManager>();
         }

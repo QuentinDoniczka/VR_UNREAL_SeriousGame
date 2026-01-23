@@ -1,16 +1,9 @@
+using Core.Managers;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Utilities;
 
 namespace Interaction
 {
-    public enum ExtinguisherType
-    {
-        CO2,
-        Foam,
-        Water
-    }
-
     public class FireExtinguisher : GrabbableObject
     {
         [Header("Fire Extinguisher Settings")]
@@ -37,18 +30,12 @@ namespace Interaction
         private bool isSecondaryGrabbed;
         private bool isSpraying;
 
-        private InputAction triggerLeftAction;
-        private InputAction triggerRightAction;
-
         private const int MaxSprayHits = 32;
         private readonly Collider[] sprayHitsBuffer = new Collider[MaxSprayHits];
 
         protected override void Awake()
         {
             base.Awake();
-
-            triggerLeftAction = inputActions.VRMenu.Get().FindAction("Trigger Left");
-            triggerRightAction = inputActions.VRMenu.Get().FindAction("Trigger Right");
 
             if (secondaryGripHandle != null)
             {
@@ -68,29 +55,39 @@ namespace Interaction
         protected override void OnEnable()
         {
             base.OnEnable();
-            grabLeftAction.performed += OnSecondaryGrabPerformed;
-            grabRightAction.performed += OnSecondaryGrabPerformed;
-            grabLeftAction.canceled += OnSecondaryGrabCanceled;
-            grabRightAction.canceled += OnSecondaryGrabCanceled;
 
-            triggerLeftAction.performed += OnTriggerLeftPerformed;
-            triggerLeftAction.canceled += OnTriggerLeftCanceled;
-            triggerRightAction.performed += OnTriggerRightPerformed;
-            triggerRightAction.canceled += OnTriggerRightCanceled;
+            var input = InputManager.Instance;
+            if (input == null) return;
+
+            if (input.GrabLeft != null)
+            {
+                input.GrabLeft.performed += OnSecondaryGrabPerformed;
+                input.GrabLeft.canceled += OnSecondaryGrabCanceled;
+            }
+            if (input.GrabRight != null)
+            {
+                input.GrabRight.performed += OnSecondaryGrabPerformed;
+                input.GrabRight.canceled += OnSecondaryGrabCanceled;
+            }
         }
 
         protected override void OnDisable()
         {
             base.OnDisable();
-            grabLeftAction.performed -= OnSecondaryGrabPerformed;
-            grabRightAction.performed -= OnSecondaryGrabPerformed;
-            grabLeftAction.canceled -= OnSecondaryGrabCanceled;
-            grabRightAction.canceled -= OnSecondaryGrabCanceled;
 
-            triggerLeftAction.performed -= OnTriggerLeftPerformed;
-            triggerLeftAction.canceled -= OnTriggerLeftCanceled;
-            triggerRightAction.performed -= OnTriggerRightPerformed;
-            triggerRightAction.canceled -= OnTriggerRightCanceled;
+            var input = InputManager.Instance;
+            if (input == null) return;
+
+            if (input.GrabLeft != null)
+            {
+                input.GrabLeft.performed -= OnSecondaryGrabPerformed;
+                input.GrabLeft.canceled -= OnSecondaryGrabCanceled;
+            }
+            if (input.GrabRight != null)
+            {
+                input.GrabRight.performed -= OnSecondaryGrabPerformed;
+                input.GrabRight.canceled -= OnSecondaryGrabCanceled;
+            }
         }
 
         protected override void Update()
@@ -116,7 +113,6 @@ namespace Interaction
 
             Transform triggeringHand = GetHandFromContext(context);
             if (triggeringHand == null) return;
-
             if (triggeringHand == handTransform) return;
 
             Transform freeHand = GetFreeHand();
@@ -160,32 +156,15 @@ namespace Interaction
 
         private Transform GetHandFromContext(InputAction.CallbackContext context)
         {
-            if (context.action == grabLeftAction)
+            var input = InputManager.Instance;
+            if (input == null) return null;
+
+            if (context.action == input.GrabLeft)
                 return GetLeftHand();
-            if (context.action == grabRightAction)
+            if (context.action == input.GrabRight)
                 return GetRightHand();
 
             return null;
-        }
-
-        private void OnTriggerLeftPerformed(InputAction.CallbackContext context)
-        {
-            DevLog.Log("Left trigger pressed");
-        }
-
-        private void OnTriggerLeftCanceled(InputAction.CallbackContext context)
-        {
-            DevLog.Log("Left trigger released");
-        }
-
-        private void OnTriggerRightPerformed(InputAction.CallbackContext context)
-        {
-            DevLog.Log("Right trigger pressed");
-        }
-
-        private void OnTriggerRightCanceled(InputAction.CallbackContext context)
-        {
-            DevLog.Log("Right trigger released");
         }
 
         private void UpdateTriggerState()
@@ -206,13 +185,13 @@ namespace Interaction
 
             if (secondaryHand != null)
             {
-                float leftValue = triggerLeftAction.ReadValue<float>();
-                float rightValue = triggerRightAction.ReadValue<float>();
+                var input = InputManager.Instance;
+                if (input == null) return;
 
-                if (secondaryHand == GetLeftHand())
-                    triggerPressed = leftValue > 0.5f;
-                else if (secondaryHand == GetRightHand())
-                    triggerPressed = rightValue > 0.5f;
+                if (secondaryHand == GetLeftHand() && input.TriggerLeft != null)
+                    triggerPressed = input.TriggerLeft.ReadValue<float>() > 0.5f;
+                else if (secondaryHand == GetRightHand() && input.TriggerRight != null)
+                    triggerPressed = input.TriggerRight.ReadValue<float>() > 0.5f;
             }
 
             if (triggerPressed && !isSpraying)

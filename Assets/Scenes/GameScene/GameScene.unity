@@ -321,7 +321,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5913335889939738212, guid: 85769bcea361e3f48bf5a42c99d89303, type: 3}
   m_PrefabInstance: {fileID: 947671406}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &241752157
+--- !u!114 &241752163
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -330,9 +330,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 241752151}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 02fd04f99b4b984468e8c51792dec1f1, type: 3}
+  m_Script: {fileID: 11500000, guid: f0a92e0fa239d1a4081f59363db33e79, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Core.VRHandRegister
+  m_EditorClassIdentifier: Assembly-CSharp::Core.Tracking.VRHandRegister
+  handSide: 1
 --- !u!1 &266897449
 GameObject:
   m_ObjectHideFlags: 0
@@ -527,20 +528,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9a7b3c4d5e6f7890abcdef1234567890, type: 3}
---- !u!114 &448872124
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
-  m_Name: VR Menu/Trigger Right
-  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
-  m_Asset: {fileID: -944628639613478452, guid: 173fa97e3229f354ba89f7865594ce2b, type: 3}
-  m_ActionId: 66666666-aaaa-bbbb-cccc-666666666666
 --- !u!1 &492820849
 GameObject:
   m_ObjectHideFlags: 0
@@ -803,34 +790,6 @@ Transform:
   - {fileID: 1654996868}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &803224390
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
-  m_Name: VR Menu/Toggle Menu
-  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
-  m_Asset: {fileID: -944628639613478452, guid: 173fa97e3229f354ba89f7865594ce2b, type: 3}
-  m_ActionId: 12345678-90ab-cdef-1234-567890abcdef
---- !u!114 &813089119
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
-  m_Name: VR Menu/Trigger Left
-  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
-  m_Asset: {fileID: -944628639613478452, guid: 173fa97e3229f354ba89f7865594ce2b, type: 3}
-  m_ActionId: 55555555-aaaa-bbbb-cccc-555555555555
 --- !u!1 &824959976
 GameObject:
   m_ObjectHideFlags: 0
@@ -877,11 +836,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.InGameMenuHUD
   menuPanel: {fileID: 2124921060}
-  cameraTransform: {fileID: 1054028674}
-  hudCanvas: {fileID: 899373192}
   confirmationDialog: {fileID: 1445837140}
-  distanceFromCamera: 2
-  offset: {x: 0, y: 0, z: 0}
   pauseGameWhenOpen: 1
   menuAction:
     m_UseReference: 1
@@ -894,7 +849,7 @@ MonoBehaviour:
       m_Interactions: 
       m_SingletonActionBindings: []
       m_Flags: 0
-    m_Reference: {fileID: 803224390}
+    m_Reference: {fileID: 0}
   enableKeyboardInput: 1
   keyboardToggleKey: 60
 --- !u!1 &892776925
@@ -1045,9 +1000,9 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 899373188}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 2}
-  m_LocalScale: {x: 0.001, y: 0.001, z: 0.001}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2124921061}
@@ -1057,8 +1012,8 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1920, y: 1080}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0, y: 0}
 --- !u!114 &899373190
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1098,7 +1053,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!223 &899373192
 Canvas:
   m_ObjectHideFlags: 0
@@ -1108,7 +1063,7 @@ Canvas:
   m_GameObject: {fileID: 899373188}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 2
+  m_RenderMode: 0
   m_Camera: {fileID: 947671407}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
@@ -1437,19 +1392,14 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8916140705498948929, guid: 85769bcea361e3f48bf5a42c99d89303, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1057296576}
+      addedObject: {fileID: 1057296582}
     - targetCorrespondingSourceObject: {fileID: 5913335889939738212, guid: 85769bcea361e3f48bf5a42c99d89303, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 241752157}
+      addedObject: {fileID: 241752163}
   m_SourcePrefab: {fileID: 100100000, guid: 85769bcea361e3f48bf5a42c99d89303, type: 3}
 --- !u!20 &947671407 stripped
 Camera:
   m_CorrespondingSourceObject: {fileID: 6678407180336417434, guid: 85769bcea361e3f48bf5a42c99d89303, type: 3}
-  m_PrefabInstance: {fileID: 947671406}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &1054028674 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7874396558269261699, guid: 85769bcea361e3f48bf5a42c99d89303, type: 3}
   m_PrefabInstance: {fileID: 947671406}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1057296570 stripped
@@ -1457,7 +1407,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 8916140705498948929, guid: 85769bcea361e3f48bf5a42c99d89303, type: 3}
   m_PrefabInstance: {fileID: 947671406}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1057296576
+--- !u!114 &1057296582
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1466,9 +1416,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1057296570}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 02fd04f99b4b984468e8c51792dec1f1, type: 3}
+  m_Script: {fileID: 11500000, guid: f0a92e0fa239d1a4081f59363db33e79, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Core.VRHandRegister
+  m_EditorClassIdentifier: Assembly-CSharp::Core.Tracking.VRHandRegister
+  handSide: 0
 --- !u!1 &1330415007
 GameObject:
   m_ObjectHideFlags: 0
@@ -1749,8 +1700,6 @@ MonoBehaviour:
     m_Bits: 4294967295
   sprayCone: {fileID: 1719596116}
   showSprayConeVisual: 1
-  triggerLeftActionRef: {fileID: 813089119}
-  triggerRightActionRef: {fileID: 448872124}
 --- !u!54 &1389839020
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2670,7 +2619,7 @@ RectTransform:
   m_GameObject: {fileID: 2124921060}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2130263731}

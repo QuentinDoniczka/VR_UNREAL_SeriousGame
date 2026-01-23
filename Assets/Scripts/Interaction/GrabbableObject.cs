@@ -1,3 +1,4 @@
+using Core.Managers;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -28,10 +29,6 @@ namespace Interaction
         protected Rigidbody rb;
         protected InteractableHighlight highlight;
 
-        protected VRMenuInputActions inputActions;
-        protected InputAction grabLeftAction;
-        protected InputAction grabRightAction;
-
         private const string LeftHandTag = "LeftHand";
         private const string RightHandTag = "RightHand";
 
@@ -46,9 +43,6 @@ namespace Interaction
         {
             rb = GetComponent<Rigidbody>();
             SetupHighlight();
-            inputActions = new VRMenuInputActions();
-            grabLeftAction = inputActions.VRMenu.GrabLeft;
-            grabRightAction = inputActions.VRMenu.GrabRight;
         }
 
         private void SetupHighlight()
@@ -90,20 +84,37 @@ namespace Interaction
 
         protected virtual void OnEnable()
         {
-            inputActions.Enable();
-            grabLeftAction.performed += OnGrabLeftPerformed;
-            grabLeftAction.canceled += OnGrabLeftCanceled;
-            grabRightAction.performed += OnGrabRightPerformed;
-            grabRightAction.canceled += OnGrabRightCanceled;
+            var input = InputManager.Instance;
+            if (input == null) return;
+
+            if (input.GrabLeft != null)
+            {
+                input.GrabLeft.performed += OnGrabLeftPerformed;
+                input.GrabLeft.canceled += OnGrabLeftCanceled;
+            }
+            if (input.GrabRight != null)
+            {
+                input.GrabRight.performed += OnGrabRightPerformed;
+                input.GrabRight.canceled += OnGrabRightCanceled;
+            }
         }
 
         protected virtual void OnDisable()
         {
-            grabLeftAction.performed -= OnGrabLeftPerformed;
-            grabLeftAction.canceled -= OnGrabLeftCanceled;
-            grabRightAction.performed -= OnGrabRightPerformed;
-            grabRightAction.canceled -= OnGrabRightCanceled;
-            inputActions.Disable();
+            var input = InputManager.Instance;
+            if (input != null)
+            {
+                if (input.GrabLeft != null)
+                {
+                    input.GrabLeft.performed -= OnGrabLeftPerformed;
+                    input.GrabLeft.canceled -= OnGrabLeftCanceled;
+                }
+                if (input.GrabRight != null)
+                {
+                    input.GrabRight.performed -= OnGrabRightPerformed;
+                    input.GrabRight.canceled -= OnGrabRightCanceled;
+                }
+            }
 
             leftHand = null;
             rightHand = null;
