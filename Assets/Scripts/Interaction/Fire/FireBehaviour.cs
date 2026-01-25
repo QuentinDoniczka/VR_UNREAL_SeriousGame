@@ -1,9 +1,10 @@
+using System;
 using UnityEngine;
 
-namespace Interaction
+namespace Interaction.Fire
 {
     [RequireComponent(typeof(Collider))]
-    public class Fire : MonoBehaviour
+    public class FireBehaviour : MonoBehaviour
     {
         [Header("Growth Settings")]
         [SerializeField] private float growthSpeed = 0.1f;
@@ -12,17 +13,25 @@ namespace Interaction
         [Header("Kill Settings")]
         [SerializeField] private float minScaleToKill = 0.2f;
 
+        private float _spawnTime;
+
+        public float TimeAlive => Time.time - _spawnTime;
+        public event Action<FireBehaviour> OnExtinguished;
+        public event Action<FireBehaviour> OnExpired;
+
+        private void Awake()
+        {
+            _spawnTime = Time.time;
+        }
+
         private void Update()
         {
             Grow();
         }
 
-        private void OnTriggerStay(Collider other)
+        public void ApplyExtinguish(float power)
         {
-            var sprayCone = other.GetComponent<SprayCone>();
-            if (sprayCone == null || sprayCone.Extinguisher == null) return;
-
-            Shrink(sprayCone.Extinguisher.ExtinguishingPower);
+            Shrink(power);
         }
 
         private void Grow()
@@ -49,7 +58,13 @@ namespace Interaction
 
         private void Kill()
         {
-            Debug.Log("[Fire] Fire extinguished!");
+            OnExtinguished?.Invoke(this);
+            Destroy(gameObject);
+        }
+
+        public void Expire()
+        {
+            OnExpired?.Invoke(this);
             Destroy(gameObject);
         }
     }

@@ -1,7 +1,9 @@
+using Interaction.Fire;
 using UnityEngine;
 
 namespace Interaction
 {
+    [RequireComponent(typeof(Collider))]
     public class SprayCone : MonoBehaviour
     {
         private FireExtinguisher extinguisher;
@@ -16,6 +18,14 @@ namespace Interaction
             {
                 Debug.LogError("[SprayCone] No FireExtinguisher found in parent.", this);
             }
+        }
+
+        private void OnTriggerStay(Collider other)
+        {
+            if (extinguisher == null) return;
+            if (!other.TryGetComponent<FireBehaviour>(out var fire)) return;
+
+            fire.ApplyExtinguish(extinguisher.ExtinguishingPower);
         }
     }
 }
