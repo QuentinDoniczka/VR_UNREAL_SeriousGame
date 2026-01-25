@@ -12,6 +12,7 @@ namespace UI
 
         [Header("Dependencies")]
         [SerializeField] private ConfirmationDialog confirmationDialog;
+        [SerializeField] private InGameMenuHUD menuHUD;
 
         protected override void RegisterButtons()
         {
@@ -51,7 +52,16 @@ namespace UI
 
         private void OnBackButtonClicked()
         {
-            gameObject.SetActive(false);
+            if (menuHUD != null)
+            {
+                menuHUD.CloseMenu();
+            }
+            else
+            {
+                Debug.LogWarning("InGameMenuPanel: menuHUD reference is missing. Assign it in the Inspector.");
+                Time.timeScale = 1f;
+                gameObject.SetActive(false);
+            }
         }
     }
 }

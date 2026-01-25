@@ -20,6 +20,7 @@ namespace Interaction
         [Header("Spray Cone")]
         [SerializeField] private GameObject sprayCone;
         [SerializeField] private bool showSprayConeVisual = true;
+        [SerializeField] private float extinguishingPower = 0.5f;
 
         [Header("Input")]
         [SerializeField] private float triggerThreshold = 0.5f;
@@ -47,52 +48,6 @@ namespace Interaction
             }
         }
 
-        protected override void OnEnable()
-        {
-            base.OnEnable();
-            SubscribeToGrabInputs(true);
-        }
-
-        protected override void OnDisable()
-        {
-            base.OnDisable();
-            SubscribeToGrabInputs(false);
-        }
-
-        private void SubscribeToGrabInputs(bool subscribe)
-        {
-            var input = InputManager.Instance;
-            if (input == null) return;
-
-            if (input.GrabLeft != null)
-            {
-                if (subscribe)
-                {
-                    input.GrabLeft.performed += OnSecondaryGrabPerformed;
-                    input.GrabLeft.canceled += OnSecondaryGrabCanceled;
-                }
-                else
-                {
-                    input.GrabLeft.performed -= OnSecondaryGrabPerformed;
-                    input.GrabLeft.canceled -= OnSecondaryGrabCanceled;
-                }
-            }
-
-            if (input.GrabRight != null)
-            {
-                if (subscribe)
-                {
-                    input.GrabRight.performed += OnSecondaryGrabPerformed;
-                    input.GrabRight.canceled += OnSecondaryGrabCanceled;
-                }
-                else
-                {
-                    input.GrabRight.performed -= OnSecondaryGrabPerformed;
-                    input.GrabRight.canceled -= OnSecondaryGrabCanceled;
-                }
-            }
-        }
-
         protected override void Update()
         {
             base.Update();
@@ -105,64 +60,58 @@ namespace Interaction
             UpdateTriggerState();
         }
 
-        private void OnSecondaryGrabPerformed(InputAction.CallbackContext context)
+        protected override void OnGrabLeftPerformed(InputAction.CallbackContext context)
         {
-            if (!isGrabbed) return;
+            if (TrySecondaryGrab(GetLeftHand())) return;
+            base.OnGrabLeftPerformed(context);
+        }
 
-            Transform triggeringHand = GetHandFromContext(context);
-            if (triggeringHand == null) return;
-            if (triggeringHand == handTransform) return;
+        protected override void OnGrabLeftCanceled(InputAction.CallbackContext context)
+        {
+            if (TrySecondaryRelease(GetLeftHand())) return;
+            base.OnGrabLeftCanceled(context);
+        }
 
-            Transform freeHand = GetFreeHand();
-            if (freeHand == null || freeHand != triggeringHand) return;
+        protected override void OnGrabRightPerformed(InputAction.CallbackContext context)
+        {
+            if (TrySecondaryGrab(GetRightHand())) return;
+            base.OnGrabRightPerformed(context);
+        }
 
-            secondaryHand = freeHand;
+        protected override void OnGrabRightCanceled(InputAction.CallbackContext context)
+        {
+            if (TrySecondaryRelease(GetRightHand())) return;
+            base.OnGrabRightCanceled(context);
+        }
+
+        private bool TrySecondaryGrab(Transform hand)
+        {
+            if (!isGrabbed) return false;
+            if (hand == null || hand == handTransform) return false;
+
+            secondaryHand = hand;
             isSecondaryGrabbed = true;
 
             if (secondaryGripHandle != null)
             {
                 secondaryGripHandle.SetActive(true);
             }
+            return true;
         }
 
-        private void OnSecondaryGrabCanceled(InputAction.CallbackContext context)
+        private bool TrySecondaryRelease(Transform hand)
         {
-            if (!isSecondaryGrabbed) return;
+            if (!isSecondaryGrabbed) return false;
+            if (hand != secondaryHand) return false;
 
-            Transform releasingHand = GetHandFromContext(context);
-            if (releasingHand == secondaryHand)
+            secondaryHand = null;
+            isSecondaryGrabbed = false;
+
+            if (secondaryGripHandle != null)
             {
-                secondaryHand = null;
-                isSecondaryGrabbed = false;
-
-                if (secondaryGripHandle != null)
-                {
-                    secondaryGripHandle.SetActive(false);
-                }
+                secondaryGripHandle.SetActive(false);
             }
-        }
-
-        private Transform GetFreeHand()
-        {
-            if (handTransform == GetLeftHand())
-                return GetRightHand();
-            if (handTransform == GetRightHand())
-                return GetLeftHand();
-
-            return null;
-        }
-
-        private Transform GetHandFromContext(InputAction.CallbackContext context)
-        {
-            var input = InputManager.Instance;
-            if (input == null) return null;
-
-            if (context.action == input.GrabLeft)
-                return GetLeftHand();
-            if (context.action == input.GrabRight)
-                return GetRightHand();
-
-            return null;
+            return true;
         }
 
         private void UpdateTriggerState()
@@ -250,5 +199,6 @@ namespace Interaction
         }
 
         public ExtinguisherType Type => extinguisherType;
+        public float ExtinguishingPower => extinguishingPower;
     }
 }

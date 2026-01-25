@@ -169,7 +169,7 @@ namespace Interaction
             }
         }
 
-        private void OnGrabLeftPerformed(InputAction.CallbackContext context)
+        protected virtual void OnGrabLeftPerformed(InputAction.CallbackContext context)
         {
             Transform hand = GetLeftHand();
             if (hand == null) return;
@@ -182,7 +182,7 @@ namespace Interaction
             }
         }
 
-        private void OnGrabLeftCanceled(InputAction.CallbackContext context)
+        protected virtual void OnGrabLeftCanceled(InputAction.CallbackContext context)
         {
             Transform hand = GetLeftHand();
             if (isGrabbed && handTransform == hand)
@@ -191,7 +191,7 @@ namespace Interaction
             }
         }
 
-        private void OnGrabRightPerformed(InputAction.CallbackContext context)
+        protected virtual void OnGrabRightPerformed(InputAction.CallbackContext context)
         {
             Transform hand = GetRightHand();
             if (hand == null) return;
@@ -204,7 +204,7 @@ namespace Interaction
             }
         }
 
-        private void OnGrabRightCanceled(InputAction.CallbackContext context)
+        protected virtual void OnGrabRightCanceled(InputAction.CallbackContext context)
         {
             Transform hand = GetRightHand();
             if (isGrabbed && handTransform == hand)
