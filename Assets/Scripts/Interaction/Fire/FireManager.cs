@@ -15,12 +15,8 @@ namespace Interaction.Fire
         [SerializeField] private float initialScale = 0.3f;
         [SerializeField] private float maxFireDuration = 120f;
 
-        [Header("Location Selection")]
-        [SerializeField, Range(0f, 1f)] private float zoneSelectionWeight = 0.5f;
-
         private readonly List<FireSpawnPoint> _spawnPoints = new();
-        private readonly List<FireSpawnZone> _spawnZones = new();
-        private readonly Dictionary<FireBehaviour, IFireSpawnLocation> _activeFires = new();
+        private readonly Dictionary<FireBehaviour, FireSpawnPoint> _activeFires = new();
 
         private float _spawnTimer;
         private bool _isInitialized;
@@ -28,7 +24,7 @@ namespace Interaction.Fire
         private void Start()
         {
             _spawnTimer = initialDelay;
-            CollectSpawnLocations();
+            CollectSpawnPoints();
             _isInitialized = true;
         }
 
@@ -65,41 +61,25 @@ namespace Interaction.Fire
             }
         }
 
-        private void CollectSpawnLocations()
+        private void CollectSpawnPoints()
         {
             _spawnPoints.AddRange(FindObjectsByType<FireSpawnPoint>(FindObjectsSortMode.None));
-            _spawnZones.AddRange(FindObjectsByType<FireSpawnZone>(FindObjectsSortMode.None));
-
-            Debug.Log($"[FireManager] Found {_spawnPoints.Count} spawn points and {_spawnZones.Count} spawn zones.");
+            Debug.Log($"[FireManager] Found {_spawnPoints.Count} spawn points.");
         }
 
         private void TrySpawnFire()
         {
-            IFireSpawnLocation location = SelectSpawnLocation();
-            if (location == null) return;
-
-            SpawnFireAt(location);
-        }
-
-        private IFireSpawnLocation SelectSpawnLocation()
-        {
-            bool tryZoneFirst = Random.value < zoneSelectionWeight;
-
-            if (tryZoneFirst)
+            FireSpawnPoint point = GetAvailablePoint();
+            if (point == null)
             {
-                IFireSpawnLocation zone = GetAvailableZone();
-                if (zone != null) return zone;
-
-                return GetAvailablePoint();
+                Debug.Log("[FireManager] No available spawn points.");
+                return;
             }
 
-            IFireSpawnLocation point = GetAvailablePoint();
-            if (point != null) return point;
-
-            return GetAvailableZone();
+            SpawnFireAt(point);
         }
 
-        private IFireSpawnLocation GetAvailablePoint()
+        private FireSpawnPoint GetAvailablePoint()
         {
             List<FireSpawnPoint> available = _spawnPoints.FindAll(p => p.IsAvailable);
             if (available.Count == 0) return null;
@@ -107,18 +87,10 @@ namespace Interaction.Fire
             return available[Random.Range(0, available.Count)];
         }
 
-        private IFireSpawnLocation GetAvailableZone()
+        private void SpawnFireAt(FireSpawnPoint point)
         {
-            List<FireSpawnZone> available = _spawnZones.FindAll(z => z.IsAvailable);
-            if (available.Count == 0) return null;
-
-            return available[Random.Range(0, available.Count)];
-        }
-
-        private void SpawnFireAt(IFireSpawnLocation location)
-        {
-            Vector3 position = location.GetSpawnPosition();
-            Quaternion rotation = location.GetSpawnRotation();
+            Vector3 position = point.GetSpawnPosition();
+            Quaternion rotation = point.GetSpawnRotation();
 
             GameObject fireObj = Instantiate(firePrefab, position, rotation);
             fireObj.transform.localScale = Vector3.one * initialScale;
@@ -133,8 +105,8 @@ namespace Interaction.Fire
 
             fire.OnExtinguished += HandleFireExtinguished;
             fire.OnExpired += HandleFireExpired;
-            location.MarkOccupied();
-            _activeFires.Add(fire, location);
+            point.MarkOccupied();
+            _activeFires.Add(fire, point);
 
             Debug.Log($"[FireManager] Spawned fire at {position}. Active fires: {_activeFires.Count}");
         }
@@ -156,9 +128,9 @@ namespace Interaction.Fire
             fire.OnExtinguished -= HandleFireExtinguished;
             fire.OnExpired -= HandleFireExpired;
 
-            if (_activeFires.TryGetValue(fire, out IFireSpawnLocation location))
+            if (_activeFires.TryGetValue(fire, out FireSpawnPoint point))
             {
-                location.MarkFree();
+                point.MarkFree();
                 _activeFires.Remove(fire);
             }
         }

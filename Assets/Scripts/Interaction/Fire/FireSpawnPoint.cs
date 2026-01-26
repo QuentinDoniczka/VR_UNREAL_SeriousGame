@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Interaction.Fire
 {
-    public class FireSpawnPoint : MonoBehaviour, IFireSpawnLocation
+    public class FireSpawnPoint : MonoBehaviour
     {
         [Header("Cooldown")]
         [SerializeField] private float cooldownAfterExtinguish = 5f;
@@ -11,7 +11,6 @@ namespace Interaction.Fire
         private float _cooldownTimer;
 
         public bool IsAvailable => !_isOccupied && _cooldownTimer <= 0f;
-        public bool CanSpawnMultiple => false;
 
         private void Update()
         {
