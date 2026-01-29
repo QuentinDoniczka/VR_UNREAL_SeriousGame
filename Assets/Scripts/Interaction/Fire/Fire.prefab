@@ -29509,4 +29509,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Interaction.Fire
   growthSpeed: 0.1
   maxScale: 1
-  minScaleToKill: 0.2
+  minScaleToKill: 0.05
+  meshHeight: 1

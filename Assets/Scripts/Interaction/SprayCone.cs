@@ -25,7 +25,7 @@ namespace Interaction
             if (extinguisher == null) return;
             if (!other.TryGetComponent<FireBehaviour>(out var fire)) return;
 
-            fire.ApplyExtinguish(extinguisher.ExtinguishingPower);
+            fire.TryApplyExtinguish(extinguisher.Type, extinguisher.ExtinguishingPower);
         }
     }
 }

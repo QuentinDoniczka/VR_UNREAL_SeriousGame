@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UI;
 using UnityEngine;
 
 namespace Interaction.Fire
@@ -103,18 +104,24 @@ namespace Interaction.Fire
                 return;
             }
 
+            FireType randomType = GetRandomFireType();
+            fire.SetFireType(randomType);
+
             fire.OnExtinguished += HandleFireExtinguished;
             fire.OnExpired += HandleFireExpired;
             point.MarkOccupied();
             _activeFires.Add(fire, point);
 
-            Debug.Log($"[FireManager] Spawned fire at {position}. Active fires: {_activeFires.Count}");
+            Debug.Log($"[FireManager] Spawned {randomType} fire at {position}. Active fires: {_activeFires.Count}");
         }
 
         private void HandleFireExtinguished(FireBehaviour fire)
         {
             UnregisterFire(fire);
-            Debug.Log($"[FireManager] Fire extinguished. Active fires: {_activeFires.Count}");
+
+            var scoreHUD = ScoreHUD.Instance;
+            if (scoreHUD != null)
+                scoreHUD.AddScore();
         }
 
         private void HandleFireExpired(FireBehaviour fire)
@@ -136,6 +143,12 @@ namespace Interaction.Fire
         }
 
         public int ActiveFireCount => _activeFires.Count;
+
+        private static FireType GetRandomFireType()
+        {
+            var values = System.Enum.GetValues(typeof(FireType));
+            return (FireType)values.GetValue(Random.Range(0, values.Length));
+        }
 
         public void ForceSpawnFire()
         {

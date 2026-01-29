@@ -1,10 +1,11 @@
 using Core.Managers;
+using Interaction.Inspection;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace Interaction
 {
-    public class FireExtinguisher : GrabbableObject
+    public class FireExtinguisher : GrabbableObject, IInspectable
     {
         [Header("Fire Extinguisher Settings")]
         [SerializeField] private ExtinguisherType extinguisherType = ExtinguisherType.CO2;
@@ -200,5 +201,21 @@ namespace Interaction
 
         public ExtinguisherType Type => extinguisherType;
         public float ExtinguishingPower => extinguishingPower;
+
+        public string GetInspectionName()
+        {
+            return "Extincteur";
+        }
+
+        public string GetInspectionDetails()
+        {
+            return extinguisherType switch
+            {
+                ExtinguisherType.CO2 => "CO2",
+                ExtinguisherType.Foam => "Mousse",
+                ExtinguisherType.Water => "Eau",
+                _ => "Inconnu"
+            };
+        }
     }
 }

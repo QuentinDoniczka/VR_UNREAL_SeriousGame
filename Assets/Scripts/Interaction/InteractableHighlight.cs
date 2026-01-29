@@ -7,7 +7,7 @@ namespace Interaction
     {
         [Header("Outline Settings")]
         [SerializeField] private Color outlineColor = new Color(0.3f, 0.8f, 1f, 1f);
-        [SerializeField] private float outlineWidth = 0.03f;
+        [SerializeField] private float outlineWidth = 0f;
         [SerializeField] private float emissionIntensity = 5f;
         [SerializeField] [Range(0f, 1f)] private float transparency = 0.5f;
 
